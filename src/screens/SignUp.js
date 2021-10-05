@@ -1,67 +1,66 @@
-import { useNavigation } from '@react-navigation/core';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { KeyboardAvoidingView, StyleSheet, TextInput, View } from 'react-native';
 import MainButton from '../components/MainButton.js';
 import PickPhotoButton from '../components/PickPhotoButton.js';
 import { auth } from '../firebase/firebase.js';
 import * as ImagePicker from 'expo-image-picker';
-import { defaultPhotoURL } from '../constants/constants.js';
 import colors from '../constants/colors.js';
+import { DEFAULT_PHOTO_URL } from '@env';
 
-const SignUpScreen = () => {
+const SignUp = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [displayName, setDisplayName] = useState('');
-    const [selectedImageURL, setSelectedImageURL] = React.useState(defaultPhotoURL);
+    const [userName, setUserName] = useState('');
+    const [selectedImageURL, setSelectedImageURL] = useState(DEFAULT_PHOTO_URL);
 
     let openImagePickerAsync = async () => {
         let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-        if (permissionResult.granted === false) {
+        if (!permissionResult.granted) {
             alert('Permission to access camera roll is required!');
             return;
         }
 
         let pickerResult = await ImagePicker.launchImageLibraryAsync();
-        console.log(pickerResult);
 
-        if (pickerResult.cancelled === true) {
+        if (pickerResult.cancelled) {
             return;
         }
 
-        setSelectedImageURL(pickerResult.uri)
+        setSelectedImageURL(pickerResult.uri);
     }
-
-    const navigation = useNavigation();
 
     const handleSignUp = async () => {
         try {
             const user = await auth.createUserWithEmailAndPassword(email, password);
-            await auth.currentUser.updateProfile({ displayName, photoURL: selectedImageURL });
-
+            await auth.currentUser.updateProfile({ displayName: userName, photoURL: selectedImageURL });
             if (user) {
                 navigation.replace("Home");
             }
-
+            setEmail('');
+            setPassword('');
+            setUserName('');
+            setSelectedImageURL('');
         }
         catch (error) {
-            alert(error.message)
+            alert(error.message);
         }
     }
 
+    const keyboardAvoidingBehavior = Platform.OS === 'ios' ? 'padding' : 'height';
 
     return (
         <KeyboardAvoidingView
             style={styles.container}
-            behavior='height'
+            behavior={keyboardAvoidingBehavior}
         >
             <View style={styles.inputContainer}>
                 <TextInput
                     selectionColor='dodgerblue'
                     placeholder='Name'
                     style={styles.textInput}
-                    value={displayName}
-                    onChangeText={text => setDisplayName(text)}
+                    value={userName}
+                    onChangeText={text => setUserName(text)}
                 />
                 <TextInput
                     selectionColor='dodgerblue'
@@ -93,7 +92,7 @@ const SignUpScreen = () => {
     )
 }
 
-export default SignUpScreen;
+export default SignUp;
 
 const styles = StyleSheet.create({
     container: {

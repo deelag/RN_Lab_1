@@ -6,9 +6,7 @@ import * as firebase from "firebase";
 import { firebaseConfig } from './firebaseConfig.js';
 
 // Initialize Firebase
-let app = firebase.apps.length === 0
-    ? firebase.initializeApp(firebaseConfig)
-    : firebase.app();
+let app = !firebase.apps.length ? firebase.initializeApp(firebaseConfig) : firebase.app();
 
 const auth = firebase.auth();
 

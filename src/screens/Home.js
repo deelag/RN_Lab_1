@@ -1,17 +1,15 @@
-import { useNavigation, useRoute } from '@react-navigation/core';
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import MainButton from '../components/MainButton';
 import { auth } from '../firebase/firebase';
 
-const HomeScreen = () => {
-    const navigation = useNavigation();
+const Home = ({ navigation }) => {
 
     const handleSignOut = () => {
         auth
             .signOut()
             .then(() => {
-                navigation.replace('Login')
+                navigation.navigate('Login');
             })
             .catch(error => alert(error.message));
     }
@@ -36,7 +34,7 @@ const HomeScreen = () => {
     )
 }
 
-export default HomeScreen;
+export default Home;
 
 const styles = StyleSheet.create({
     container: {

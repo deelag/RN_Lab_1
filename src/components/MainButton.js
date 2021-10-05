@@ -3,23 +3,23 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import colors from '../constants/colors';
 
 const MainButton = ({ onPress, buttonText, outline }) => {
+
+    const buttonStyle = outline ? [styles.submitButton, styles.submitButtonOutline] : styles.submitButton;
+    const buttonTextStyle = outline ? [styles.buttonText, styles.buttonTextOutline] : styles.buttonText;
+
     return (
         <TouchableOpacity
             onPress={onPress}
-            style={outline
-                ? [styles.submitButton, styles.submitButtonOutline]
-                : styles.submitButton}
+            style={buttonStyle}
         >
-            <Text style={outline
-                ? [styles.buttonText, styles.buttonTextOutline]
-                : styles.buttonText}>
+            <Text style={buttonTextStyle}>
                 {buttonText}
             </Text>
         </TouchableOpacity>
     )
 }
 
-export default MainButton
+export default MainButton;
 
 const styles = StyleSheet.create({
     submitButton: {

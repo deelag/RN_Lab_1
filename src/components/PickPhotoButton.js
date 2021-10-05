@@ -15,7 +15,7 @@ const MainButton = ({ onPress, buttonText }) => {
     )
 }
 
-export default MainButton
+export default MainButton;
 
 const styles = StyleSheet.create({
     photoButton: {

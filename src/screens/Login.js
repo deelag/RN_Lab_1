@@ -1,11 +1,10 @@
-import { useNavigation } from '@react-navigation/core';
 import React, { useState, useEffect } from 'react';
 import { KeyboardAvoidingView, StyleSheet, TextInput, View, Text } from 'react-native';
 import MainButton from '../components/MainButton';
 import { auth } from '../firebase/firebase';
 import colors from '../constants/colors.js';
 
-const LoginScreen = () => {
+const Login = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -14,12 +13,11 @@ const LoginScreen = () => {
             .signInWithEmailAndPassword(email, password)
             .then(userCredentials => {
                 const user = userCredentials.user;
-                console.log(user.email);
+                setEmail('');
+                setPassword('');
             })
             .catch(error => alert(error.message))
     }
-
-    const navigation = useNavigation();
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
@@ -27,13 +25,15 @@ const LoginScreen = () => {
                 navigation.replace("Home");
             }
         })
-        return unsubscribe;
+        return () => unsubscribe;
     }, [])
+
+    const keyboardAvoidingBehavior = Platform.OS === 'ios' ? 'padding' : 'height';
 
     return (
         <KeyboardAvoidingView
             style={styles.container}
-            behavior='height'
+            behavior={keyboardAvoidingBehavior}
         >
             <Text style={styles.header}>
                 Welcome!
@@ -70,7 +70,7 @@ const LoginScreen = () => {
     )
 }
 
-export default LoginScreen;
+export default Login;
 
 const styles = StyleSheet.create({
     container: {
